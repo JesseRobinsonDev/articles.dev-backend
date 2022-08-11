@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 import { articleDB } from "../../config/connections";
 
 const articleSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  body: { type: String, required: true },
-  author: { type: String, required: true },
-  created: { type: Date, defualt: new Date() },
+  authorID: { type: String, required: true },
+  authorUsername: { type: String, required: true },
+  articleTitle: { type: String, required: true },
+  articleBody: { type: String, required: true },
+  articleTags: [String],
+  dateCreated: { type: Date, default: Date.now },
 });
 
 export var articleModel = articleDB.model("article", articleSchema);
