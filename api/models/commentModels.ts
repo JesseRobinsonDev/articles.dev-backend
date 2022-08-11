@@ -11,4 +11,3 @@ const commentSchema = new mongoose.Schema({
 });
 
 export var commentModel = articleDB.model("comment", commentSchema);
-

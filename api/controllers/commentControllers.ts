@@ -10,11 +10,11 @@ export const getComment = async (req: Request, res: Response) => {
     const comment = await commentModel.findById(id);
     res.status(200).json({
       commentID: comment._id,
-      authorID: comment.AuthorID,
-      authorUsername: comment.AuthorUsername,
+      authorID: comment.authorID,
+      authorUsername: comment.authorUsername,
       commentBody: comment.commentBody,
       articleID: comment.articleID,
-      commentReplyCount: comment.commentReplyIDs.length,
+      articleTitle: comment.articleTitle,
       dateCreated: comment.dateCreated,
     });
   } catch (error) {

@@ -159,6 +159,7 @@ export const searchUserComments = async (req: Request, res: Response) => {
       authorUsername: comment.authorUsername,
       commentBody: comment.commentBody,
       articleID: comment.articleID,
+      articleTitle: comment.articleTitle,
       dateCreated: comment.dateCreated,
     });
   }
