@@ -44,11 +44,24 @@ export const loginUser = async (req: Request, res: Response) => {
 
   res.status(200).json({ userID: user._id, jwtToken: "token" });
 };
+
+export const getUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const user = await userModel.findById(id);
+
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  if (user.password != encryptedPassword) {
-    return res.status(401).json({ message: "Incorrect password" });
+
+  res.status(200).json({
+    userID: user._id,
+    username: user.username,
+    userArticleCount: user.userArticleIDs.length,
+    dateJoined: user.dateJoined,
+  });
+};
+
   }
   res.status(200).json(user);
 };
