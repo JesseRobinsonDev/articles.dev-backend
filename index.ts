@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./api/routes/userRoutes";
+import articleRoutes from "./api/routes/articleRoutes";
+import commentRoutes from "./api/routes/commentRoutes";
 import cors from "cors";
 
 dotenv.config();
@@ -18,6 +20,8 @@ app.use(
 );
 
 app.use("/user", userRoutes);
+app.use("/article", articleRoutes);
+app.use("/comment", commentRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);

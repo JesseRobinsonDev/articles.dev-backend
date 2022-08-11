@@ -58,6 +58,7 @@ export const getUser = async (req: Request, res: Response) => {
     userID: user._id,
     username: user.username,
     userArticleCount: user.userArticleIDs.length,
+    userCommentCount: user.userCommentIDs.length,
     dateJoined: user.dateJoined,
   });
 };
