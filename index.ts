@@ -9,12 +9,13 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
+const origin = process.env.ORIGIN;
 
 app.use(express.json({ limit: "30mb" }));
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: origin,
     methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
   })
 );
