@@ -36,6 +36,7 @@ export const createArticle = async (req: Request, res: Response) => {
 export const searchArticles = async (req: Request, res: Response) => {
   let limit: any = req.query.limit;
   let skip: any = req.query.skip;
+  let search: any = req.query.search;
 
   if (typeof limit != "string") {
     limit = "10";
@@ -45,8 +46,12 @@ export const searchArticles = async (req: Request, res: Response) => {
     skip = "0";
   }
 
+  if (typeof search != "string") {
+    search = ".";
+  }
+
   const articles = await articleModel
-    .find()
+    .find({ articleTitle: { $regex: `${search}`, $options: "gi" } })
     .limit(parseInt(limit))
     .skip(parseInt(skip));
 
@@ -60,6 +65,7 @@ export const searchArticles = async (req: Request, res: Response) => {
       articleTitle: article.articleTitle,
       articleTags: article.articleTags,
       articleCommentCount: article.articleCommentIDs.length,
+      articleBody: article.articleBody,
       dateCreated: article.dateCreated,
     });
   }
@@ -77,18 +83,35 @@ export const getArticle = async (req: Request, res: Response) => {
   }
 
   res.status(200).json({
-    articleID: article,
+    articleID: article._id,
     authorID: article.authorID,
     authorUsername: article.authorUsername,
-    articleTitle: article.title,
-    articleBody: article.body,
-    articleTags: article.tags,
+    articleTitle: article.articleTitle,
+    articleBody: article.articleBody,
+    articleTags: article.articleTags,
     articleCommentCount: article.articleCommentIDs.length,
     dateCreated: article.dateCreated,
   });
 };
 
-export const updateArticle = async (req: Request, res: Response) => {};
+export const updateArticle = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { title, body, tags } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).send(`No article with id ${id}`);
+  }
+
+  const updatedArticle = await articleModel.findByIdAndUpdate(
+    id,
+    { articleTitle: title, articleBody: body, articleTags: tags },
+    {
+      new: true,
+    }
+  );
+
+  res.status(200).json(updatedArticle);
+};
 
 export const deleteArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -100,50 +123,6 @@ export const deleteArticle = async (req: Request, res: Response) => {
   await deleteMongoArticle(id);
 
   res.status(200).json({ message: "Article successfully deleted" });
-};
-
-export const searchArticleComments = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  const article = await articleModel.findById(id);
-
-  if (!article) {
-    return res.status(404).send(`No article with id: ${id}`);
-  }
-
-  let limit: any = req.query.limit;
-  let skip: any = req.query.skip;
-
-  if (typeof limit != "string") {
-    limit = "10";
-  }
-
-  if (typeof skip != "string") {
-    skip = "0";
-  }
-
-  const comments = await commentModel
-    .find({
-      _id: { $in: article.articleReplyIDs },
-    })
-    .limit(limit)
-    .skip(skip);
-
-  let commentsResponse = [];
-
-  for (const comment of comments) {
-    commentsResponse.push({
-      commentID: comment._id,
-      authorID: comment.authorID,
-      authorUsername: comment.authorUsername,
-      commentBody: comment.commentBody,
-      articleID: comment.articleID,
-      articleTitle: comment.articleTitle,
-      dateCreated: comment.dateCreated,
-    });
-  }
-
-  res.status(200).json(commentsResponse);
 };
 
 export const commentArticle = async (req: Request, res: Response) => {
@@ -172,7 +151,15 @@ export const commentArticle = async (req: Request, res: Response) => {
 
   try {
     await comment.save();
-    res.status(201).json(comment);
+    res.status(201).json({
+      commentID: comment._id,
+      authorID: comment.authorID,
+      authorUsername: comment.authorUsername,
+      commentBody: comment.commentBody,
+      articleID: comment.articleID,
+      articleTitle: comment.articleTitle,
+      dateCreated: comment.dateCreated,
+    });
 
     article.articleCommentIDs.unshift(comment._id);
     await articleModel.findByIdAndUpdate(article._id, article, { new: true });
@@ -182,6 +169,50 @@ export const commentArticle = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(409).json({ message: error });
   }
+};
+
+export const searchArticleComments = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const article = await articleModel.findById(id);
+
+  if (!article) {
+    return res.status(404).send(`No article with id: ${id}`);
+  }
+
+  let limit: any = req.query.limit;
+  let skip: any = req.query.skip;
+
+  if (typeof limit != "string") {
+    limit = "10";
+  }
+
+  if (typeof skip != "string") {
+    skip = "0";
+  }
+
+  const comments = await commentModel
+    .find({
+      _id: { $in: article.articleCommentIDs },
+    })
+    .limit(limit)
+    .skip(skip);
+
+  let commentsResponse = [];
+
+  for (const comment of comments) {
+    commentsResponse.push({
+      commentID: comment._id,
+      authorID: comment.authorID,
+      authorUsername: comment.authorUsername,
+      commentBody: comment.commentBody,
+      articleID: comment.articleID,
+      articleTitle: comment.articleTitle,
+      dateCreated: comment.dateCreated,
+    });
+  }
+
+  res.status(200).json(commentsResponse);
 };
 
 export async function deleteMongoArticle(articleID: String) {

@@ -12,11 +12,11 @@ import {
 const router = express.Router();
 
 router.post("/create", createArticle);
-router.post("/:id/comment", commentArticle);
 router.get("/search", searchArticles);
 router.get("/:id/get", getArticle);
-router.get("/:id/comments/search", searchArticleComments);
 router.put("/:id/update", updateArticle);
 router.delete("/:id/delete", deleteArticle);
+router.post("/:id/comment", commentArticle);
+router.get("/:id/comments/search", searchArticleComments);
 
 export default router;

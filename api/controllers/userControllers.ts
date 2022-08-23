@@ -114,6 +114,7 @@ export const searchUserArticles = async (req: Request, res: Response) => {
       authorID: article.authorID,
       authorUsername: article.authorUsername,
       articleTitle: article.articleTitle,
+      articleBody: article.articleBody,
       articleTags: article.articleTags,
       articleCommentCount: article.articleCommentIDs.length,
       dateCreated: article.dateCreated,

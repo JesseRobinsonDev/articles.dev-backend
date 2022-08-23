@@ -22,7 +22,24 @@ export const getComment = async (req: Request, res: Response) => {
   }
 };
 
-export const updateComment = async (req: Request, res: Response) => {};
+export const updateComment = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { body } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).send(`No comment with id ${id}`);
+  }
+
+  const updatedComment = await commentModel.findByIdAndUpdate(
+    id,
+    { commentBody: body },
+    {
+      new: true,
+    }
+  );
+
+  res.status(200).json(updatedComment);
+};
 
 export const deleteComment = async (req: Request, res: Response) => {
   const { id } = req.params;
