@@ -5,7 +5,7 @@ import articleRoutes from "./api/routes/articleRoutes";
 import commentRoutes from "./api/routes/commentRoutes";
 import cors from "cors";
 
-dotenv.config();
+//dotenv.config();
 
 const app = express();
 const port = process.env.PORT;

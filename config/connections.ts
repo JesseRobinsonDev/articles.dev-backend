@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config();
+//dotenv.config();
 
 let userURI: string;
 if (process.env.USERS_MONGO_URI) {
