@@ -9,7 +9,7 @@ import { Request, Response } from "express";
 //dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const origin = process.env.ORIGIN;
 
 app.use(express.json({ limit: "30mb" }));
@@ -21,9 +21,9 @@ app.use(
   })
 );
 
-//app.use("/user", userRoutes);
-//app.use("/article", articleRoutes);
-//app.use("/comment", commentRoutes);
+app.use("/user", userRoutes);
+app.use("/article", articleRoutes);
+app.use("/comment", commentRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   console.log("Hello World!");
