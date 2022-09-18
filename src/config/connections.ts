@@ -9,6 +9,7 @@ if (process.env.USERS_MONGO_URI) {
 } else {
   throw new Error("Environment variable USERS_MONGO_URI not found");
 }
+export const userDB = mongoose.createConnection(userURI);
 
 let articleURI: string;
 if (process.env.ARTICLES_MONGO_URI) {
@@ -16,6 +17,4 @@ if (process.env.ARTICLES_MONGO_URI) {
 } else {
   throw new Error("Environment variable ARTICLES_MONGO_URI not found");
 }
-
-export const userDB = mongoose.createConnection(userURI);
 export const articleDB = mongoose.createConnection(articleURI);
