@@ -21,14 +21,13 @@ app.use(
   })
 );
 
-// Add routes to express app
-app.use("/user", userRoutes);
-app.use("/article", articleRoutes);
-app.use("/comment", commentRoutes);
+//app.use("/user", userRoutes);
+//app.use("/article", articleRoutes);
+//app.use("/comment", commentRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  console.log("API V1.0");
-  return res.status(200).json("Success");
+  console.log("Hello World!");
+  return res.status(200).json("Hello World!");
 });
 
 app.listen(port, () => {
